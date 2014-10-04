@@ -18,19 +18,31 @@
 
 package bfk;
 
-import java.io.IOException;
+import bfk.ast.Program;
+import bfk.common.ConsoleIO;
+import bfk.common.IO;
+import bfk.interpreter.BfkInterpreter;
 
-import org.junit.Assert;
-import org.junit.Test;
+public class Interpreter extends AbstractConsoleApp {
 
-public class BfkTest {
+    private final IO ioHandler;
 
-    @Test
-    public void test() throws IOException {
-        final TestIO testIO = new TestIO();
-        final Bfk bfk = new Bfk(testIO);
-        bfk.processFile("src/test/resources/helloworld.bfk");
-        Assert.assertEquals("Hello World!\n", testIO.getOutput());
+    public Interpreter(IO ioHandler) {
+        super();
+        this.ioHandler = ioHandler;
+    }
+
+    public Interpreter() {
+        this(new ConsoleIO());
+    }
+
+    @Override
+    protected void execute(Program program) {
+        BfkInterpreter.run(program, ioHandler);
+    }
+
+    public static void main(String[] args) {
+        new Interpreter().process(args);
     }
 
 }

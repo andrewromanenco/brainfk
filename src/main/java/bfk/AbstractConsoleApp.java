@@ -23,38 +23,34 @@ import java.io.IOException;
 import bfk.ast.BfkAstBuilder;
 import bfk.ast.Program;
 import bfk.common.BrainFKUtil;
-import bfk.common.ConsoleIO;
-import bfk.common.IO;
-import bfk.interpreter.BfkInterpreter;
 import bfk.optimizer.BfkAstOptimizer;
 
 import com.romanenco.cfrm.ParsingTreeNode;
 
-public final class Bfk {
+
+public abstract class AbstractConsoleApp {
 
     private static final int SINGLE_PARAMETER = 1;
 
-    private final IO ioHandler;
-
-    protected Bfk() {
-        this.ioHandler = new ConsoleIO();
-    }
-
-    protected Bfk(IO ioHandler) {
-        this.ioHandler = ioHandler;
-    }
-
-    public static void main(String[] args) throws IOException {
+    public void process(String[] args) {
         printHelpAndExitIfWornCall(args);
-        new Bfk().processFile(args[0]);
+        final String fileName = args[0];
+        processInputFile(fileName);
     }
 
-    void processFile(String fileName) throws IOException {
-        final ParsingTreeNode tree = BrainFKUtil.parseSourceFromFile(fileName);
+    protected void processInputFile(String fileName) {
+        final ParsingTreeNode tree;
+        try {
+            tree = BrainFKUtil.parseSourceFromFile(fileName);
+        } catch (IOException e) {
+            throw new BfkError("Error reading source", e);
+        }
         final Program program = BfkAstBuilder.buildAst(BrainFKUtil.GRAMMAR, tree);
         BfkAstOptimizer.optimize(program);
-        BfkInterpreter.run(program, ioHandler);
+        execute(program);
     }
+
+    protected abstract void execute(Program program);
 
     private static void printHelpAndExitIfWornCall(String[] args) {
         if (args.length != SINGLE_PARAMETER) {
