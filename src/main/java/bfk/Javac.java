@@ -26,6 +26,8 @@ import bfk.common.FileUtil;
 
 public class Javac extends AbstractConsoleApp {
 
+    private static final String JAVA_CLASS_EXT = ".class";
+
     private final FileUtil fileWriter;
     private String fileName;
 
@@ -48,7 +50,7 @@ public class Javac extends AbstractConsoleApp {
     protected void execute(Program program) {
         final String className = createClassName(this.fileName);
         final byte[] bytecode = JavaGenerator.generateByteCode(program, className);
-        fileWriter.saveByteCode(bytecode, className + ".class");
+        fileWriter.saveByteCode(bytecode, className + JAVA_CLASS_EXT);
     }
 
     static String createClassName(String path) {

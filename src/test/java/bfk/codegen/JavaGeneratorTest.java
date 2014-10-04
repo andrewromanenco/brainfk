@@ -38,7 +38,7 @@ public class JavaGeneratorTest {
         final Program program =  BfkAstBuilder.buildAst(BrainFKUtil.GRAMMAR, tree);
         final JavaGenerator java = new JavaGenerator("SomeName");
         program.getStatements().accept(java);
-        byte[] bytecode = java.finishAndGenerate();
+        final byte[] bytecode = java.finishAndGenerate();
         Assert.assertNotNull(bytecode);
         Assert.assertTrue(bytecode.length > 10);
         Assert.assertTrue((bytecode[0]& 0xFF) == 0xCA);
